@@ -1,7 +1,6 @@
 # SOFTWARE REQUIREMENTS SPECIFICATION (SRS)
 **Project:** BookStation - Online Bookstore
 **Version:** 1.0
-**Status:** Draft
 
 ## 1. GIỚI THIỆU (INTRODUCTION)
 ### 1.1 Mục đích
@@ -19,40 +18,7 @@ Hệ thống bao gồm:
 
 ## 3. SƠ ĐỒ USE CASE (USE CASE DIAGRAM)
 
-```mermaid
-usecaseDiagram
-    actor "Guest" as g
-    actor "Customer" as c
-    actor "Admin" as a
-
-    package BookStation_System {
-        usecase "Xem/Tìm kiếm Sách" as UC1
-        usecase "Xem bài viết/Tin tức" as UC2
-        usecase "Đăng ký/Đăng nhập" as UC3
-        usecase "Quản lý Giỏ hàng" as UC4
-        usecase "Thanh toán (Checkout)" as UC5
-        usecase "Xem lịch sử đơn hàng" as UC6
-        usecase "Quản lý Sản phẩm/Danh mục" as UC7
-        usecase "Quản lý Đơn hàng" as UC8
-        usecase "Quản lý Bài viết" as UC9
-        usecase "Thống kê báo cáo" as UC10
-    }
-
-    g --> UC1
-    g --> UC2
-    g --> UC3
-
-    c --|> g : inherits
-    c --> UC4
-    c --> UC5
-    c --> UC6
-
-    a --> UC3
-    a --> UC7
-    a --> UC8
-    a --> UC9
-    a --> UC10
-```
+![Sơ đồ Use Case BookStation](./assets/usecase.png)
 
 ## 4. YÊU CẦU CHỨC NĂNG (FUNCTIONAL REQUIREMENTS)
 
