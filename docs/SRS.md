@@ -53,3 +53,8 @@ Hệ thống bao gồm:
 - **Bảo mật:** Password Hash (BCrypt). API Authentication (JWT).
 - **Database:** PostgreSQL (Dockerized). Dữ liệu tiền tệ dùng kiểu `Decimal`.
 - **UI/UX:** Responsive trên Mobile/Desktop.
+
+## 6. THIẾT KẾ CƠ SỞ DỮ LIỆU (ERD)
+Hệ thống bao gồm 6 bảng thực thể chính: Users, Books, Categories, Orders, OrderDetails, Posts.
+
+![Sơ đồ ERD Database](./assets/erd-database.png)
