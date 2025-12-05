@@ -58,34 +58,4 @@ BookStation/ (Root)
 ### 3.1 Sơ đồ tuần tự: Đặt hàng (Checkout Sequence)
 Mô tả luồng xử lý khi khách hàng nhấn nút "Đặt hàng".
 
-```mermaid
-sequenceDiagram
-    participant User as Khách hàng
-    participant FE as Frontend (Next.js)
-    participant API as Backend API
-    participant DB as Database
-
-    User->>FE: Nhấn "Đặt hàng" (Checkout)
-    FE->>API: POST /api/orders (Cart info, Shipping info)
-    
-    activate API
-    API->>API: Validate Token & Input
-    API->>DB: Kiểm tra tồn kho (Products)
-    
-    alt Hết hàng
-        DB-->>API: Tồn kho không đủ
-        API-->>FE: Trả lỗi "Sản phẩm hết hàng"
-        FE-->>User: Hiển thị thông báo lỗi
-    else Còn hàng
-        API->>DB: Begin Transaction
-        API->>DB: Tạo Order & OrderItems
-        API->>DB: Trừ tồn kho (Quantity)
-        API->>DB: Xóa CartItems cũ
-        API->>DB: Commit Transaction
-        
-        DB-->>API: Order Created Success
-        API-->>FE: Trả về OrderID + Success
-        FE-->>User: Chuyển trang "Đặt hàng thành công"
-    end
-    deactivate API
-```
+![Checkout Sequence Diagram](./assets/checkout-sequence.png)
