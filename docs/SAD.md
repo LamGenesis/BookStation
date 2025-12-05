@@ -12,7 +12,14 @@ Hệ thống BookStation được xây dựng theo mô hình **Client-Server**, 
 * **Database:** PostgreSQL (Dockerized).
 * **Tools:** Docker, Git (Gitflow), Visual Studio / VS Code.
 
-## 2. CẤU TRÚC DỰ ÁN (PROJECT STRUCTURE)
+## 2. LUỒNG XỬ LÝ CHÍNH (KEY FLOWS)
+
+### 2.1 Sơ đồ tuần tự: Đặt hàng (Checkout Sequence)
+Mô tả luồng xử lý khi khách hàng nhấn nút "Đặt hàng".
+
+![Checkout Sequence Diagram](./assets/checkout-sequence.png)
+
+## 3. CẤU TRÚC DỰ ÁN (PROJECT STRUCTURE)
 Dự án được tổ chức theo mô hình Monorepo. Dưới đây là cấu trúc cây thư mục tổng thể từ Root:
 
 ```text
@@ -52,10 +59,3 @@ BookStation/ (Root)
 │
 ├── docker-compose.yml              # Orchestration Local Dev [cite: 102]
 └── .gitignore
-
-## 3. LUỒNG XỬ LÝ CHÍNH (KEY FLOWS)
-
-### 3.1 Sơ đồ tuần tự: Đặt hàng (Checkout Sequence)
-Mô tả luồng xử lý khi khách hàng nhấn nút "Đặt hàng".
-
-![Checkout Sequence Diagram](./assets/checkout-sequence.png)
