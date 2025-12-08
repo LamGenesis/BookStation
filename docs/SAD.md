@@ -9,6 +9,7 @@ Hệ thống BookStation được xây dựng theo mô hình **Client-Server**, 
 ### 1.1 Tech Stack
 * **Frontend:** Next.js (App Router), TypeScript, Tailwind CSS, Zustand, TanStack Query.
 * **Backend:** ASP.NET Core Web API (.NET 8), Entity Framework Core (Npgsql).
+* **Authentication Architecture:** Hệ thống sử dụng mô hình Access Token và Refresh Token. Access Token có thời gian sống ngắn và được gửi kèm theo mỗi yêu cầu cần xác thực. Refresh Token được lưu trên server để duy trì phiên đăng nhập và có thể thu hồi khi người dùng đăng xuất.  Mật khẩu người dùng được băm bằng BCrypt trước khi lưu vào cơ sở dữ liệu.
 * **Database:** PostgreSQL (Dockerized).
 * **Tools:** Docker, Git (Gitflow), Visual Studio / VS Code.
 
