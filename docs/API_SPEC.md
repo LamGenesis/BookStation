@@ -30,6 +30,7 @@
     * *Body:* `{ "productId": 1, "quantity": 1 }`
 * `PUT /api/cart/items/{id}`: Cập nhật số lượng item trong giỏ.
 * `DELETE /api/cart/items/{id}`: Xóa item khỏi giỏ hàng.
+* `POST /api/cart/merge`: Đồng bộ giỏ hàng của khách (LocalStorage) vào giỏ hàng người dùng sau khi đăng nhập. Payload gồm danh sách sản phẩm và số lượng. Nếu sản phẩm đã tồn tại trong giỏ hàng của người dùng, hệ thống sẽ cộng dồn số lượng.
 
 ## 5. ORDERS (Đơn hàng)
 * `POST /api/orders`: Tạo đơn hàng mới (Checkout).
@@ -56,7 +57,13 @@
 * `GET /api/posts`: Lấy danh sách bài viết tin tức.
 * `GET /api/posts/{id}`: Xem chi tiết bài viết.
 * `POST /api/posts`: [Admin] Đăng bài viết mới.
+* `PUT /api/posts/{id}`: [Admin] Cập nhật bài viết.
+* `DELETE /api/posts/{id}`: [Admin] Xóa bài viết.
 
 ## 8. STATISTICS (Thống kê)
 * `GET /api/admin/statistics/sales`: Thống kê doanh thu và số lượng đơn hàng.
     * *Query Params:* `from` (ngày bắt đầu), `to` (ngày kết thúc).
+
+## 9. ADMIN USERS
+* `GET /api/admin/users`: [Admin] Lấy danh sách người dùng (hỗ trợ phân trang nếu cần).
+* `GET /api/admin/users/{id}`: [Admin] Xem thông tin chi tiết của một người dùng.

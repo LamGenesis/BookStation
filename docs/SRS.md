@@ -81,5 +81,6 @@ Hệ thống bao gồm 9 bảng thực thể chính:
 ## 7. YÊU CẦU PHI CHỨC NĂNG
 - **Hiệu năng:** API phản hồi < 500ms. Hình ảnh được tối ưu hóa.
 - **Bảo mật:** Password Hash (BCrypt). API Authentication (JWT).
+    Sử dụng mô hình Access Token và Refresh Token, Refresh Token được lưu tại server để hỗ trợ duy trì phiên đăng nhập.
 - **Database:** PostgreSQL (Dockerized). Dữ liệu tiền tệ dùng kiểu `Decimal`.
 - **UI/UX:** Responsive trên Mobile/Desktop.
