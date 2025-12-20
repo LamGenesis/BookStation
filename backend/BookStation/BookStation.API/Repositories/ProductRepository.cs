@@ -77,7 +77,12 @@ namespace BookStation.API.Repositories
 
         public async Task<Product> UpdateAsync(Product product)
         {
+            // Đánh dấu entity là Modified
             _context.Products.Update(product);
+
+            // Không cho EF cập nhật lại CreatedAt (ngày tạo ban đầu)
+            _context.Entry(product).Property(p => p.CreatedAt).IsModified = false;
+
             await _context.SaveChangesAsync();
             return product;
         }

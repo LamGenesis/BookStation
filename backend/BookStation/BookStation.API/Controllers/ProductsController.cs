@@ -76,7 +76,11 @@ namespace BookStation.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                // Trả về thông tin lỗi chi tiết hơn để FE debug
+                var message = ex.InnerException?.InnerException?.Message
+                              ?? ex.InnerException?.Message
+                              ?? ex.Message;
+                return BadRequest(new { message });
             }
         }
 

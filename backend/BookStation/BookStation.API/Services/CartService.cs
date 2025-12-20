@@ -1,6 +1,8 @@
 using BookStation.API.DTOs.Cart;
 using BookStation.API.Models;
 using BookStation.API.Repositories;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BookStation.API.Services
 {
@@ -138,6 +140,32 @@ namespace BookStation.API.Services
         public async Task ClearCartAsync(int userId)
         {
             await _cartItemRepository.ClearCartAsync(userId);
+        }
+
+        public async Task<CartResponseDto> MergeCartAsync(int userId, List<AddCartItemDto> items)
+        {
+            if (items == null || !items.Any())
+            {
+                // Không có gì để merge -> trả về giỏ hiện tại
+                return await GetCartAsync(userId);
+            }
+
+            foreach (var item in items)
+            {
+                try
+                {
+                    // Tận dụng lại logic AddItemAsync (đã có kiểm tra tồn kho, status, cộng dồn quantity)
+                    await AddItemAsync(userId, item);
+                }
+                catch (Exception)
+                {
+                    // Tùy bạn: có thể log lại, nhưng thường bỏ qua item lỗi để không chặn toàn bộ merge
+                    // Ví dụ: sản phẩm đã bị xóa / hết hàng -> bỏ qua
+                }
+            }
+
+            // Trả về giỏ hàng sau khi merge
+            return await GetCartAsync(userId);
         }
 
         #region Private Helpers

@@ -15,7 +15,7 @@ namespace BookStation.API.Data
             // Seed Admin User
             var admin = new User
             {
-                Email = "admin@local",
+                Email = "admin@local.com",
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword("P@ssw0rd123"),
                 FullName = "Administrator",
                 Role = "Admin",

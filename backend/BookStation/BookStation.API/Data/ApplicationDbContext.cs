@@ -65,5 +65,46 @@ namespace BookStation.API.Data
                 .HasForeignKey(ci => ci.UserId)
                 .OnDelete(DeleteBehavior.SetNull);
         }
+
+        // EF Core gọi các overload có tham số acceptAllChangesOnSuccess, nên cần override đúng signature này
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            NormalizeDateTimeKinds();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(
+            bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = default)
+        {
+            NormalizeDateTimeKinds();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        /// <summary>
+        /// Đảm bảo tất cả DateTime được lưu xuống PostgreSQL có Kind = Utc
+        /// để tránh lỗi "Cannot write DateTime with Kind=Unspecified..."
+        /// </summary>
+        private void NormalizeDateTimeKinds()
+        {
+            foreach (var entry in ChangeTracker.Entries())
+            {
+                if (entry.State == EntityState.Detached || entry.State == EntityState.Unchanged)
+                    continue;
+
+                var properties = entry.Properties
+                    .Where(p =>
+                        p.Metadata.ClrType == typeof(DateTime) ||
+                        p.Metadata.ClrType == typeof(DateTime?));
+
+                foreach (var prop in properties)
+                {
+                    if (prop.CurrentValue is DateTime dt && dt.Kind == DateTimeKind.Unspecified)
+                    {
+                        prop.CurrentValue = DateTime.SpecifyKind(dt, DateTimeKind.Utc);
+                    }
+                }
+            }
+        }
     }
 }

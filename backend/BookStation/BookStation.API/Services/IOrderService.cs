@@ -28,6 +28,11 @@ namespace BookStation.API.Services
         /// Admin cập nhật trạng thái đơn hàng
         /// </summary>
         Task<OrderDetailDto> UpdateOrderStatusAsync(int orderId, UpdateOrderStatusDto dto);
+
+        /// <summary>
+        /// Hủy đơn hàng và khôi phục giỏ hàng (khi thanh toán thất bại/hủy)
+        /// </summary>
+        Task<bool> CancelOrderAndRestoreCartAsync(int orderId, int userId);
     }
 }
 
