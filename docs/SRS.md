@@ -49,7 +49,7 @@ Dưới đây là 6 User Stories cốt lõi của hệ thống:
 |---|---|---|---|
 | **F-CUS-01** | Đăng ký / Đăng nhập | Đăng ký tài khoản mới. Đăng nhập lấy Token (JWT). | MUST |
 | **F-CUS-02** | Quản lý giỏ hàng (DB) | Đồng bộ giỏ hàng từ LocalStorage vào Database (bảng CartItems) khi đăng nhập. | MUST |
-| **F-CUS-03** | Thanh toán (Checkout) | Nhập thông tin giao hàng (Shipping Info JSON). Chọn phương thức (COD/Banking). Giả lập thanh toán (Mock Payment API). Kiểm tra tồn kho (Transaction). | MUST |
+| **F-CUS-03** | Thanh toán (Checkout) | Nhập thông tin giao hàng (Shipping Info JSON). Chọn phương thức (COD/VNPay). Tích hợp VNPay gateway để thanh toán trực tuyến. Kiểm tra tồn kho (Transaction). | MUST |
 | **F-CUS-04** | Lịch sử đơn hàng | Xem danh sách đơn đã đặt. Xem trạng thái chi tiết. | MUST |
 | **F-CUS-05** | Quản lý Profile | Cập nhật thông tin cá nhân. | SHOULD |
 | **F-CUS-06** | Tích điểm thưởng | Tính năng mở rộng: Tích điểm dựa trên giá trị đơn hàng. | CAN |
@@ -57,7 +57,7 @@ Dưới đây là 6 User Stories cốt lõi của hệ thống:
 ### 5.3 Phân hệ Quản trị (Admin)
 | ID | Tên chức năng | Mô tả chi tiết & Yêu cầu nghiệp vụ | Độ ưu tiên |
 |---|---|---|---|
-| **F-ADM-01** | Dashboard | Biểu đồ doanh thu theo ngày (Recharts). Thống kê tổng đơn, tổng user. | SHOULD |
+| **F-ADM-01** | Dashboard | Biểu đồ doanh thu theo ngày (Recharts). Thống kê tổng doanh thu, tổng đơn hàng, tổng khách hàng theo khoảng thời gian. | SHOULD |
 | **F-ADM-02** | Quản lý Sản phẩm | CRUD Sách. Fields: Tên, Mô tả, Giá, Giá giảm, Số lượng, Status, Upload nhiều ảnh. | MUST |
 | **F-ADM-03** | Quản lý Danh mục | CRUD Danh mục (Tên, Slug). | MUST |
 | **F-ADM-04** | Quản lý Đơn hàng | Xem danh sách. Cập nhật trạng thái đơn (Duyệt/Giao/Hủy). | MUST |
@@ -65,22 +65,29 @@ Dưới đây là 6 User Stories cốt lõi của hệ thống:
 | **F-ADM-06** | Quản lý User | Xem danh sách người dùng. | SHOULD |
 
 ## 6. THIẾT KẾ CƠ SỞ DỮ LIỆU (ERD)
-Hệ thống bao gồm 9 bảng thực thể chính:
+Hệ thống bao gồm 10 bảng thực thể chính:
 1. `Users` (Người dùng)
-2. `Categories` (Danh mục)
-3. `Products` (Sản phẩm)
-4. `ProductImages` (Ảnh sản phẩm)
-5. `CartItems` (Giỏ hàng)
-6. `Orders` (Đơn hàng)
-7. `OrderItems` (Chi tiết đơn hàng)
-8. `Payments` (Thanh toán)
-9. `Posts` (Tin tức)
+2. `RefreshTokens` (Refresh Token - lưu trữ token để làm mới Access Token)
+3. `Categories` (Danh mục)
+4. `Products` (Sản phẩm)
+5. `ProductImages` (Ảnh sản phẩm)
+6. `CartItems` (Giỏ hàng)
+7. `Orders` (Đơn hàng)
+8. `OrderItems` (Chi tiết đơn hàng)
+9. `Payments` (Thanh toán)
+10. `Posts` (Tin tức/Bài viết)
 
 ![Sơ đồ ERD Database](./assets/erd-database.png)
 
 ## 7. YÊU CẦU PHI CHỨC NĂNG
 - **Hiệu năng:** API phản hồi < 500ms. Hình ảnh được tối ưu hóa.
-- **Bảo mật:** Password Hash (BCrypt). API Authentication (JWT).
-    Sử dụng mô hình Access Token và Refresh Token, Refresh Token được lưu tại server để hỗ trợ duy trì phiên đăng nhập.
-- **Database:** PostgreSQL (Dockerized). Dữ liệu tiền tệ dùng kiểu `Decimal`.
-- **UI/UX:** Responsive trên Mobile/Desktop.
+- **Bảo mật:** 
+    - Password Hash (BCrypt) trước khi lưu vào database.
+    - API Authentication sử dụng JWT (JSON Web Token).
+    - Sử dụng mô hình Access Token và Refresh Token:
+        - Access Token có thời gian sống ngắn (60 phút), được gửi kèm mỗi request cần xác thực.
+        - Refresh Token có thời gian sống dài hơn (7 ngày), được lưu tại server trong bảng `RefreshTokens` để hỗ trợ duy trì phiên đăng nhập và có thể thu hồi khi người dùng đăng xuất.
+- **Database:** PostgreSQL 15 (Dockerized). Dữ liệu tiền tệ dùng kiểu `Decimal(10,2)`.
+- **Payment Gateway:** Tích hợp VNPay (Sandbox/Production) để xử lý thanh toán trực tuyến.
+- **UI/UX:** Responsive trên Mobile/Desktop, sử dụng Tailwind CSS.
+- **Deployment:** Hỗ trợ containerization với Docker và Docker Compose.
