@@ -16,7 +16,7 @@ export interface SalesStatisticResponse {
 
 export const adminStatisticsApi = {
   getSales: async (from: string, to: string): Promise<SalesStatisticResponse> => {
-    const response = await apiClient.get<SalesStatisticResponse>('/api/admin/statistics/sales', {
+    const response = await apiClient.get<SalesStatisticResponse>('/admin/statistics/sales', {
       params: { from, to },
     });
     return response.data;
@@ -41,12 +41,12 @@ export interface UpdateOrderStatusRequest {
 
 export const adminOrdersApi = {
   getAll: async (): Promise<AdminOrderSummary[]> => {
-    const response = await apiClient.get<AdminOrderSummary[]>('/api/orders');
+    const response = await apiClient.get<AdminOrderSummary[]>('/orders');
     return response.data;
   },
 
   updateStatus: async (orderId: number, data: UpdateOrderStatusRequest) => {
-    const response = await apiClient.put(`/api/orders/${orderId}/status`, data);
+    const response = await apiClient.put(`/orders/${orderId}/status`, data);
     return response.data;
   },
 };
@@ -80,7 +80,7 @@ export const adminProductsApi = {
         formData.append('images', file);
       });
     }
-    const response = await apiClient.post('/api/products', formData, {
+    const response = await apiClient.post('/products', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
@@ -104,14 +104,14 @@ export const adminProductsApi = {
         formData.append('images', file);
       });
     }
-    const response = await apiClient.put(`/api/products/${id}`, formData, {
+    const response = await apiClient.put(`/products/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
     return response.data;
   },
 
   delete: async (id: number) => {
-    await apiClient.delete(`/api/products/${id}`);
+    await apiClient.delete(`/products/${id}`);
   },
 };
 
@@ -123,17 +123,17 @@ export interface AdminCategoryFormData {
 
 export const adminCategoriesApi = {
   create: async (data: AdminCategoryFormData) => {
-    const response = await apiClient.post('/api/categories', data);
+    const response = await apiClient.post('/categories', data);
     return response.data;
   },
 
   update: async (id: number, data: AdminCategoryFormData) => {
-    const response = await apiClient.put(`/api/categories/${id}`, data);
+    const response = await apiClient.put(`/categories/${id}`, data);
     return response.data;
   },
 
   delete: async (id: number) => {
-    await apiClient.delete(`/api/categories/${id}`);
+    await apiClient.delete(`/categories/${id}`);
   },
 };
 
@@ -146,17 +146,17 @@ export interface AdminPostFormData {
 
 export const adminPostsApi = {
   create: async (data: AdminPostFormData) => {
-    const response = await apiClient.post('/api/posts', data);
+    const response = await apiClient.post('/posts', data);
     return response.data;
   },
 
   update: async (id: number, data: AdminPostFormData) => {
-    const response = await apiClient.put(`/api/posts/${id}`, data);
+    const response = await apiClient.put(`/posts/${id}`, data);
     return response.data;
   },
 
   delete: async (id: number) => {
-    await apiClient.delete(`/api/posts/${id}`);
+    await apiClient.delete(`/posts/${id}`);
   },
 };
 

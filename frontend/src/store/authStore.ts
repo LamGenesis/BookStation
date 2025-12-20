@@ -17,7 +17,7 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       user: null,
       isAuthenticated: false,
       isLoading: true,
@@ -45,6 +45,8 @@ export const useAuthStore = create<AuthState>()(
 
       checkAuth: () => {
         const token = getAccessToken();
+        const currentState = get();
+        
         if (!token) {
           set({
             user: null,
@@ -52,7 +54,11 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           });
         } else {
-          set({ isLoading: false });
+          // If token exists and user data is persisted, user is authenticated
+          set({ 
+            isAuthenticated: !!currentState.user,
+            isLoading: false 
+          });
         }
       },
     }),
@@ -63,6 +69,19 @@ export const useAuthStore = create<AuthState>()(
         user: state.user,
         isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // After rehydration, verify token and set loading to false
+        if (state) {
+          const token = getAccessToken();
+          if (token && state.user) {
+            state.isAuthenticated = true;
+          } else if (!token) {
+            state.user = null;
+            state.isAuthenticated = false;
+          }
+          state.isLoading = false;
+        }
+      },
     }
   )
 );

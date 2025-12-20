@@ -3,7 +3,7 @@ import type { Product, ProductDetail, ProductQueryParams, PaginatedResponse } fr
 
 export const productsApi = {
   getAll: async (params?: ProductQueryParams): Promise<PaginatedResponse<Product>> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>('/api/products', {
+    const response = await apiClient.get<PaginatedResponse<Product>>('/products', {
       params: {
         page: params?.page || 1,
         pageSize: params?.pageSize || 12,
@@ -16,12 +16,12 @@ export const productsApi = {
   },
 
   getById: async (id: number): Promise<ProductDetail> => {
-    const response = await apiClient.get<ProductDetail>(`/api/products/${id}`);
+    const response = await apiClient.get<ProductDetail>(`/products/${id}`);
     return response.data;
   },
 
   getNewArrivals: async (limit: number = 8): Promise<Product[]> => {
-    const response = await apiClient.get<PaginatedResponse<Product>>('/api/products', {
+    const response = await apiClient.get<PaginatedResponse<Product>>('/products', {
       params: {
         page: 1,
         pageSize: limit,

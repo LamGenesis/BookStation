@@ -89,14 +89,14 @@ export default function ProfilePage() {
                     </label>
                     <p className="text-gray-800">{user?.email}</p>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-500 mb-1">
-                      Vai trò
-                    </label>
-                    <p className="text-gray-800">
-                      {user?.role === 'Admin' ? 'Quản trị viên' : ''}
-                    </p>
-                  </div>
+                  {user?.role === 'Admin' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-500 mb-1">
+                        Vai trò
+                      </label>
+                      <p className="text-gray-800">Quản trị viên</p>
+                    </div>
+                  )}
                 </div>
               </div>
 

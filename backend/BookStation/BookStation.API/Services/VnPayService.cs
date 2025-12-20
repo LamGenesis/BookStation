@@ -53,6 +53,11 @@ namespace BookStation.API.Services
             _context.Payments.Add(payment);
             await _context.SaveChangesAsync();
 
+            // Get Vietnam timezone (UTC+7)
+            // Use UTC+7 offset directly for cross-platform compatibility
+            var vietnamTimeZone = TimeZoneInfo.CreateCustomTimeZone("Vietnam", TimeSpan.FromHours(7), "Vietnam", "Vietnam");
+            var vietnamNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, vietnamTimeZone);
+            
             // Build VNPay parameters
             var vnpParams = new SortedDictionary<string, string>
             {
@@ -67,8 +72,8 @@ namespace BookStation.API.Services
                 { "vnp_Locale", vnpayConfig["Locale"]! },
                 { "vnp_ReturnUrl", vnpayConfig["ReturnUrl"]! },
                 { "vnp_IpAddr", GetIpAddress(httpContext) },
-                { "vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss") },
-                { "vnp_ExpireDate", DateTime.Now.AddMinutes(15).ToString("yyyyMMddHHmmss") }
+                { "vnp_CreateDate", vietnamNow.ToString("yyyyMMddHHmmss") },
+                { "vnp_ExpireDate", vietnamNow.AddMinutes(15).ToString("yyyyMMddHHmmss") }
             };
 
             // Build query string
