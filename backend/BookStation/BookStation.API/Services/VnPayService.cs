@@ -164,6 +164,25 @@ namespace BookStation.API.Services
 
             if (responseCode == "00")
             {
+                // Thanh toán thành công qua trang return (trình duyệt người dùng)
+                // Cập nhật trạng thái payment và order để người dùng thấy ngay
+                payment.Status = "Success";
+                payment.TransactionId = transactionId;
+
+                if (payment.Order != null)
+                {
+                    // Đánh dấu đã thanh toán
+                    payment.Order.PaymentStatus = "Paid";
+
+                    // Nếu đơn đang ở trạng thái chờ xác nhận thì chuyển sang đang xử lý
+                    if (payment.Order.Status == "Pending")
+                    {
+                        payment.Order.Status = "Processing";
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+
                 return new VnPayReturnDto
                 {
                     Success = true,
@@ -176,6 +195,7 @@ namespace BookStation.API.Services
                 };
             }
 
+            // Các trường hợp không thành công: chỉ trả kết quả, việc hủy đơn/khôi phục giỏ đã được xử lý ở luồng khác
             return new VnPayReturnDto
             {
                 Success = false,

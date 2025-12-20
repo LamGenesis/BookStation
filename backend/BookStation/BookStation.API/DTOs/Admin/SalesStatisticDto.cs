@@ -19,6 +19,7 @@ namespace BookStation.API.DTOs.Admin
         public DateTime To { get; set; }
         public decimal TotalRevenue { get; set; }
         public int TotalOrders { get; set; }
+        public int TotalCustomers { get; set; }
         public List<SalesStatisticPointDto> DailyStatistics { get; set; } = new();
     }
 }

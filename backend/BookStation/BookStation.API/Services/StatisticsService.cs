@@ -15,9 +15,12 @@ namespace BookStation.API.Services
 
         public async Task<SalesStatisticResponseDto> GetSalesStatisticsAsync(DateTime from, DateTime to)
         {
-            // Normalize dates to start/end of day
-            var fromDate = from.Date;
-            var toDate = to.Date.AddDays(1).AddTicks(-1);
+            // Normalize dates to start/end of day and ensure UTC kind for PostgreSQL timestamp with time zone
+            var fromDateLocal = from.Date;
+            var toDateLocal = to.Date.AddDays(1).AddTicks(-1);
+
+            var fromDate = DateTime.SpecifyKind(fromDateLocal, DateTimeKind.Utc);
+            var toDate = DateTime.SpecifyKind(toDateLocal, DateTimeKind.Utc);
 
             // Query orders within the date range
             var orders = await _context.Orders
@@ -38,7 +41,7 @@ namespace BookStation.API.Services
 
             // Fill in missing dates with zero values
             var allDates = new List<SalesStatisticPointDto>();
-            for (var date = fromDate; date <= to.Date; date = date.AddDays(1))
+            for (var date = fromDateLocal; date <= to.Date; date = date.AddDays(1))
             {
                 var existingStat = dailyStats.FirstOrDefault(s => s.Date == date);
                 if (existingStat != null)
@@ -56,12 +59,20 @@ namespace BookStation.API.Services
                 }
             }
 
+            // Tổng số khách hàng đã mua trong khoảng thời gian (theo userId khác null, không tính khách vãng lai)
+            var totalCustomers = orders
+                .Where(o => o.UserId.HasValue)
+                .Select(o => o.UserId!.Value)
+                .Distinct()
+                .Count();
+
             return new SalesStatisticResponseDto
             {
-                From = fromDate,
+                From = fromDateLocal,
                 To = to.Date,
                 TotalRevenue = orders.Sum(o => o.TotalAmount),
                 TotalOrders = orders.Count,
+                TotalCustomers = totalCustomers,
                 DailyStatistics = allDates
             };
         }

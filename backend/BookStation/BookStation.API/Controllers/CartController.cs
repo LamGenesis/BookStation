@@ -2,6 +2,7 @@ using BookStation.API.DTOs.Cart;
 using BookStation.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
 using System.Security.Claims;
 
 namespace BookStation.API.Controllers
@@ -97,6 +98,26 @@ namespace BookStation.API.Controllers
             var userId = GetCurrentUserId();
             await _cartService.ClearCartAsync(userId);
             return NoContent();
+        }
+
+        /// <summary>
+        /// POST: api/cart/merge
+        /// Merge giỏ hàng tạm (guest) vào giỏ hàng của user sau khi đăng nhập
+        /// </summary>
+        [HttpPost("merge")]
+        public async Task<IActionResult> MergeCart([FromBody] MergeCartRequestDto request)
+        {
+            var userId = GetCurrentUserId();
+
+            // Nếu không có gì để merge, trả về giỏ hiện tại
+            if (request == null || request.Items == null || request.Items.Count == 0)
+            {
+                var currentCart = await _cartService.GetCartAsync(userId);
+                return Ok(currentCart);
+            }
+
+            var mergedCart = await _cartService.MergeCartAsync(userId, request.Items);
+            return Ok(mergedCart);
         }
 
         #region Private Helpers

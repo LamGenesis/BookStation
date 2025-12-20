@@ -42,3 +42,9 @@ out/
 .env.development.local
 .env.test.local
 .env.production.local
+
+# =============== #
+# Project Internal Documentation
+# =============== #
+roadmap.txt
+error_fe.txt

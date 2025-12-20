@@ -97,6 +97,30 @@ namespace BookStation.API.Controllers
             }
             catch (Exception ex)
             {
+                var errorMessage = ex.InnerException?.Message ?? ex.Message;
+                return BadRequest(new { message = errorMessage });
+            }
+        }
+
+        /// <summary>
+        /// DELETE: api/orders/{id}/cancel
+        /// Hủy đơn hàng và khôi phục giỏ hàng (khi thanh toán thất bại/hủy)
+        /// </summary>
+        [HttpDelete("{id}/cancel")]
+        public async Task<IActionResult> CancelOrder(int id)
+        {
+            try
+            {
+                var userId = GetCurrentUserId();
+                var success = await _orderService.CancelOrderAndRestoreCartAsync(id, userId);
+                if (success)
+                {
+                    return Ok(new { message = "Order cancelled and cart restored" });
+                }
+                return BadRequest(new { message = "Failed to cancel order" });
+            }
+            catch (Exception ex)
+            {
                 return BadRequest(new { message = ex.Message });
             }
         }

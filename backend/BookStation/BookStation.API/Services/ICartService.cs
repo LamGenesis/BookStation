@@ -1,4 +1,5 @@
 using BookStation.API.DTOs.Cart;
+using System.Collections.Generic;
 
 namespace BookStation.API.Services
 {
@@ -28,6 +29,11 @@ namespace BookStation.API.Services
         /// Xóa toàn bộ giỏ hàng của user
         /// </summary>
         Task ClearCartAsync(int userId);
+
+        /// <summary>
+        /// Merge giỏ hàng tạm (guest) vào giỏ hàng của user sau khi đăng nhập
+        /// </summary>
+        Task<CartResponseDto> MergeCartAsync(int userId, List<AddCartItemDto> items);
     }
 }
 
