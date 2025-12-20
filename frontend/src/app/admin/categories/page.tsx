@@ -31,6 +31,7 @@ export default function AdminCategoriesPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
   const [editingSlug, setEditingSlug] = useState('');
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
 
   const createMutation = useMutation({
     mutationFn: () => adminCategoriesApi.create({ name, slug: slug || slugify(name) }),
@@ -64,6 +65,7 @@ export default function AdminCategoriesPage() {
   const deleteMutation = useMutation({
     mutationFn: (id: number) => adminCategoriesApi.delete(id),
     onSuccess: () => {
+      setCategoryToDelete(null);
       queryClient.invalidateQueries({ queryKey: ['categories'] });
       addToast('Đã xóa danh mục', 'success');
     },
@@ -237,16 +239,7 @@ export default function AdminCategoriesPage() {
                           <Button
                             size="sm"
                             variant="danger"
-                            isLoading={deleteMutation.isPending}
-                            onClick={() => {
-                              if (
-                                confirm(
-                                  'Bạn có chắc chắn muốn xóa danh mục này? Các sản phẩm liên quan có thể bị ảnh hưởng.',
-                                )
-                              ) {
-                                deleteMutation.mutate(c.id);
-                              }
-                            }}
+                            onClick={() => setCategoryToDelete(c)}
                           >
                             Xóa
                           </Button>
@@ -259,6 +252,43 @@ export default function AdminCategoriesPage() {
           </table>
         </div>
       </div>
+
+      {categoryToDelete && (
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-lg max-w-sm w-full mx-4 p-6 space-y-4">
+            <h3 className="text-lg font-semibold text-gray-900">Xóa danh mục</h3>
+            <p className="text-sm text-gray-700">
+              Bạn có chắc chắn muốn xóa danh mục{' '}
+              <span className="font-medium">#{categoryToDelete.id} - {categoryToDelete.name}</span>?
+              Các sản phẩm liên quan có thể bị ảnh hưởng.
+            </p>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={() => setCategoryToDelete(null)}
+                disabled={deleteMutation.isPending}
+              >
+                Hủy
+              </Button>
+              <Button
+                type="button"
+                variant="danger"
+                size="sm"
+                isLoading={deleteMutation.isPending}
+                onClick={() => {
+                  if (categoryToDelete) {
+                    deleteMutation.mutate(categoryToDelete.id);
+                  }
+                }}
+              >
+                Xóa
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -26,19 +26,25 @@ export default function CartPage() {
     enabled: isAuthenticated,
   });
 
+  const { isLoading: authLoading } = useAuthStore();
+
   // Kiểm tra auth khi mount để tránh redirect sai khi reload
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  // Redirect to login nếu chắc chắn chưa đăng nhập (sau khi checkAuth chạy)
+  // Redirect to login nếu chắc chắn chưa đăng nhập (sau khi auth state được hydrate)
   useEffect(() => {
+    // Don't redirect while auth state is still loading
+    if (authLoading) return;
+    
     if (!isAuthenticated) {
       router.push('/login?redirect=/cart');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, authLoading, router]);
 
-  if (!isAuthenticated) {
+  // Show loading while checking auth or if not authenticated yet
+  if (authLoading || !isAuthenticated) {
     return <LoadingPage />;
   }
 
@@ -169,7 +175,36 @@ function CartItem({ item, onUpdate }: { item: CartItemType; onUpdate: () => void
 
   const deleteMutation = useMutation({
     mutationFn: (id: number) => cartApi.removeItem(id),
+    onMutate: async (id) => {
+      // Cancel any outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['cart'] });
+
+      // Snapshot the previous value
+      const previousCart = queryClient.getQueryData(['cart']);
+
+      // Optimistically update the cart by removing the item
+      queryClient.setQueryData(['cart'], (oldData: any) => {
+        if (!oldData) return oldData;
+        return {
+          ...oldData,
+          items: oldData.items.filter((i: any) => i.id !== id),
+          totalQuantity: Math.max(0, oldData.totalQuantity - item.quantity),
+          totalAmount: Math.max(0, oldData.totalAmount - item.subtotal),
+        };
+      });
+
+      // Return a context object with the snapshotted value
+      return { previousCart };
+    },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      onUpdate();
+    },
+    onError: (error, id, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousCart) {
+        queryClient.setQueryData(['cart'], context.previousCart);
+      }
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       onUpdate();
     },

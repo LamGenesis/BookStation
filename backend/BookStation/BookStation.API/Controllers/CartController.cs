@@ -82,9 +82,13 @@ namespace BookStation.API.Controllers
                 await _cartService.RemoveItemAsync(userId, id);
                 return NoContent();
             }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized(new { message = "User not authenticated" });
+            }
             catch (Exception ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return StatusCode(500, new { message = ex.Message });
             }
         }
 

@@ -102,7 +102,14 @@ async function proxyRequest(request: NextRequest, pathSegments: string[]) {
     });
     
     // Get response body
-    const responseBody = await response.arrayBuffer();
+    let responseBody: BodyInit | null = null;
+    
+    // For 204 No Content, don't try to read the body
+    if (response.status === 204 || response.status === 304) {
+      responseBody = null;
+    } else {
+      responseBody = await response.arrayBuffer();
+    }
     
     // Forward response with same status and headers
     const responseHeaders = new Headers();
@@ -116,6 +123,15 @@ async function proxyRequest(request: NextRequest, pathSegments: string[]) {
         responseHeaders.set(key, value);
       }
     });
+    
+    // For 204 No Content, return response without body
+    if (response.status === 204) {
+      return new NextResponse(null, {
+        status: 204,
+        statusText: response.statusText,
+        headers: responseHeaders,
+      });
+    }
     
     return new NextResponse(responseBody, {
       status: response.status,

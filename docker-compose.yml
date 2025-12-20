@@ -54,11 +54,27 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=${POSTGRES_DB};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+      - JwtSettings__SecretKey=BookStation-Super-Secret-Key-Must-Be-At-Least-32-Characters-Long-For-Security
+      - JwtSettings__Issuer=BookStation
+      - JwtSettings__Audience=BookStation
+      - JwtSettings__AccessTokenExpirationMinutes=60
+      - JwtSettings__RefreshTokenExpirationDays=7
+      - VNPay__TmnCode=${VNPay__TmnCode}
+      - VNPay__HashSecret=${VNPay__HashSecret}
+      - VNPay__BaseUrl=https://sandbox.vnpayment.vn/paymentv2/vpcpay.html
+      - VNPay__ReturnUrl=http://localhost:3000/checkout/vnpay/return
+      - VNPay__IpnUrl=http://backend:8080/api/payments/vnpay/ipn
+      - VNPay__Version=2.1.0
+      - VNPay__Command=pay
+      - VNPay__CurrCode=VND
+      - VNPay__Locale=vn
 
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_API_BASE_URL=/api
     container_name: bookstation_frontend
     env_file:
       - .env

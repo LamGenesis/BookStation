@@ -23,7 +23,7 @@ const paymentMethods = [
 export default function CheckoutPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { isAuthenticated, user, checkAuth } = useAuthStore();
+  const { isAuthenticated, user, isLoading: authLoading, checkAuth } = useAuthStore();
   const { setServerCart, clearServerCart } = useCartStore();
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [error, setError] = useState<string | null>(null);
@@ -87,12 +87,15 @@ export default function CheckoutPage() {
     }
   }, [queryClient, isAuthenticated, refetchCart]);
 
-  // Redirect to login nếu chắc chắn chưa đăng nhập (sau khi checkAuth chạy)
+  // Redirect to login nếu chắc chắn chưa đăng nhập (sau khi auth state được hydrate)
   useEffect(() => {
+    // Don't redirect while auth state is still loading
+    if (authLoading) return;
+    
     if (!isAuthenticated) {
       router.push('/login?redirect=/checkout');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, authLoading, router]);
 
   // Redirect to cart if empty
   useEffect(() => {
@@ -101,7 +104,8 @@ export default function CheckoutPage() {
     }
   }, [isLoadingCart, cart, router]);
 
-  if (!isAuthenticated || isLoadingCart) {
+  // Show loading while checking auth or loading cart
+  if (authLoading || !isAuthenticated || isLoadingCart) {
     return <LoadingPage />;
   }
 
