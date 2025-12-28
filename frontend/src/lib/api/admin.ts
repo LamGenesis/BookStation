@@ -160,4 +160,46 @@ export const adminPostsApi = {
   },
 };
 
+// ==== ADMIN USERS ====
+export interface UserSummary {
+  id: number;
+  email: string;
+  fullName: string | null;
+  role: string;
+  createdAt: string;
+  totalOrders: number;
+  totalSpent: number;
+}
+
+export interface UserDetail {
+  id: number;
+  email: string;
+  fullName: string | null;
+  role: string;
+  createdAt: string;
+  totalOrders: number;
+  totalSpent: number;
+  recentOrders: UserOrderSummary[];
+}
+
+export interface UserOrderSummary {
+  id: number;
+  createdAt: string;
+  totalAmount: number;
+  status: string;
+  paymentStatus: string;
+}
+
+export const adminUsersApi = {
+  getAll: async (): Promise<UserSummary[]> => {
+    const response = await apiClient.get<UserSummary[]>('/admin/users');
+    return response.data;
+  },
+
+  getById: async (id: number): Promise<UserDetail> => {
+    const response = await apiClient.get<UserDetail>(`/admin/users/${id}`);
+    return response.data;
+  },
+};
+
 
