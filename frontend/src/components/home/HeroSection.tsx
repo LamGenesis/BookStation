@@ -24,7 +24,7 @@ const banners = [
   {
     id: 3,
     title: 'Freeship toàn quốc',
-    subtitle: 'Đơn hàng từ 300.000đ',
+    subtitle: '',
     bgColor: 'bg-gradient-to-r from-green-500 to-teal-500',
     link: '/products',
   },

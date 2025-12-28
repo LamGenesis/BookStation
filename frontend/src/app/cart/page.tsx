@@ -13,7 +13,7 @@ import { useAuthStore, useCartStore } from '@/store';
 
 export default function CartPage() {
   const router = useRouter();
-  const { isAuthenticated, checkAuth } = useAuthStore();
+  const { isAuthenticated, user, checkAuth } = useAuthStore();
   const { setServerCart } = useCartStore();
 
   const { data: cart, isLoading, refetch } = useQuery({
@@ -34,14 +34,20 @@ export default function CartPage() {
   }, [checkAuth]);
 
   // Redirect to login nếu chắc chắn chưa đăng nhập (sau khi auth state được hydrate)
+  // Redirect admin to admin panel
   useEffect(() => {
     // Don't redirect while auth state is still loading
     if (authLoading) return;
     
+    if (user?.role === 'Admin') {
+      router.replace('/admin');
+      return;
+    }
+    
     if (!isAuthenticated) {
       router.push('/login?redirect=/cart');
     }
-  }, [isAuthenticated, authLoading, router]);
+  }, [isAuthenticated, user, authLoading, router]);
 
   // Show loading while checking auth or if not authenticated yet
   if (authLoading || !isAuthenticated) {

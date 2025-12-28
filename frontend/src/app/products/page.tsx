@@ -8,10 +8,12 @@ import { ProductGrid } from '@/components/products/ProductGrid';
 import { ProductFilters } from '@/components/products/ProductFilters';
 import { Pagination } from '@/components/shared/Pagination';
 import { LoadingPage } from '@/components/shared/Loading';
+import { useAuthStore } from '@/store';
 
 function ProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { user, isLoading: authLoading, checkAuth } = useAuthStore();
 
   // Get params from URL
   const pageParam = searchParams.get('page');
@@ -26,6 +28,22 @@ function ProductsContent() {
   );
   const [sort, setSort] = useState(sortParam || 'newest');
   const [showFilters, setShowFilters] = useState(false);
+
+  // Check auth and redirect admin
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  useEffect(() => {
+    if (!authLoading && user?.role === 'Admin') {
+      router.replace('/admin');
+    }
+  }, [user, authLoading, router]);
+
+  // Don't render if admin
+  if (!authLoading && user?.role === 'Admin') {
+    return null;
+  }
 
   // Fetch categories
   const { data: categories = [] } = useQuery({

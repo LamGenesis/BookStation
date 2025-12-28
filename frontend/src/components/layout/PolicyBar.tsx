@@ -6,7 +6,7 @@ const policies = [
       </svg>
     ),
     title: 'Miễn phí vận chuyển',
-    description: 'Đơn hàng từ 300.000đ',
+    description: '',
   },
   {
     icon: (
@@ -52,9 +52,11 @@ export function PolicyBar() {
                 <h3 className="font-semibold text-gray-800 text-sm sm:text-base">
                   {policy.title}
                 </h3>
-                <p className="text-gray-500 text-xs sm:text-sm">
-                  {policy.description}
-                </p>
+                {policy.description && (
+                  <p className="text-gray-500 text-xs sm:text-sm">
+                    {policy.description}
+                  </p>
+                )}
               </div>
             </div>
           ))}

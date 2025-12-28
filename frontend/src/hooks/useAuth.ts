@@ -17,7 +17,14 @@ export function useAuth() {
     onSuccess: async (data) => {
       setAuth(data);
       
-      // Merge local cart with server cart
+      // Admin doesn't need cart functionality
+      if (data.user?.role === 'Admin') {
+        queryClient.invalidateQueries({ queryKey: ['cart'] });
+        router.push('/admin');
+        return;
+      }
+      
+      // Merge local cart with server cart (only for customers)
       const localItems = getLocalItemsForMerge();
       if (localItems.length > 0) {
         try {
@@ -47,7 +54,14 @@ export function useAuth() {
     onSuccess: async (data) => {
       setAuth(data);
       
-      // Merge local cart with server cart
+      // Admin doesn't need cart functionality
+      if (data.user?.role === 'Admin') {
+        queryClient.invalidateQueries({ queryKey: ['cart'] });
+        router.push('/admin');
+        return;
+      }
+      
+      // Merge local cart with server cart (only for customers)
       const localItems = getLocalItemsForMerge();
       if (localItems.length > 0) {
         try {
@@ -67,15 +81,18 @@ export function useAuth() {
   const logoutMutation = useMutation({
     mutationFn: () => authApi.logout(),
     onSuccess: () => {
+      const wasAdmin = user?.role === 'Admin';
       logoutStore();
       queryClient.clear();
-      router.push('/');
+      // Admin logout goes to login page, customer goes to home
+      router.push(wasAdmin ? '/login' : '/');
     },
     onError: () => {
       // Even if logout fails on server, clear local state
+      const wasAdmin = user?.role === 'Admin';
       logoutStore();
       queryClient.clear();
-      router.push('/');
+      router.push(wasAdmin ? '/login' : '/');
     },
   });
 

@@ -32,6 +32,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { href: '/admin/categories', label: 'Danh mục' },
     { href: '/admin/orders', label: 'Đơn hàng' },
     { href: '/admin/posts', label: 'Bài viết' },
+    { href: '/admin/users', label: 'Người dùng' },
   ];
 
   return (
@@ -75,12 +76,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
             <span className="hidden sm:inline text-gray-700">
               {user?.fullName || user?.email || 'Admin'}
             </span>
-            <Link
-              href="/"
-              className="px-3 py-1.5 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs sm:text-sm"
-            >
-              Về trang khách
-            </Link>
           </div>
         </header>
 

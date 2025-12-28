@@ -42,33 +42,60 @@ export function Header() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center gap-6">
           {/* Logo */}
-          <Link
-            href="/"
-            className="flex items-center gap-2 shrink-0 text-white hover:text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
-          >
-            <svg
-              className="w-10 h-10"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+          {mounted && user?.role !== 'Admin' ? (
+            <Link
+              href="/"
+              className="flex items-center gap-2 shrink-0 text-white hover:text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
             >
-              <path
-                d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span className="text-2xl font-bold">BookStation</span>
-          </Link>
+              <svg
+                className="w-10 h-10"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-2xl font-bold">BookStation</span>
+            </Link>
+          ) : (
+            <div className="flex items-center gap-2 shrink-0 text-white px-3 py-2">
+              <svg
+                className="w-10 h-10"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-2xl font-bold">BookStation</span>
+            </div>
+          )}
 
           {/* Search Bar */}
           <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
@@ -103,11 +130,12 @@ export function Header() {
 
           {/* Cart & Account */}
           <div className="flex items-center gap-4">
-            {/* Cart */}
-            <Link
-              href="/cart"
-              className="flex items-center gap-2 text-white hover:text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
-            >
+            {/* Cart - Hidden for Admin */}
+            {mounted && user?.role !== 'Admin' && (
+              <Link
+                href="/cart"
+                className="flex items-center gap-2 text-white hover:text-white hover:bg-blue-700 px-3 py-2 rounded-lg transition-colors"
+              >
               <div className="relative">
                 <svg
                   className="w-6 h-6"
@@ -130,6 +158,7 @@ export function Header() {
               </div>
               <span className="hidden sm:inline">Giỏ hàng</span>
             </Link>
+            )}
 
             {/* Account */}
             {mounted && isAuthenticated ? (
