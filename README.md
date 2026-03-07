@@ -86,7 +86,7 @@ BookStation/
 │   └── API_SPEC.md           # API Specification
 │
 ├── docker-compose.yml         # Docker Compose configuration
-├── .env                       # Environment variables (không commit)
+├── .env                       # Environment variables 
 └── README.md                  # File này
 ```
 
