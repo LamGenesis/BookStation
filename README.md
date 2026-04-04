@@ -6,12 +6,6 @@ BookStation là một hệ thống website bán sách trực tuyến được x�
 
 - [Tính năng chính](#tính-năng-chính)
 - [Tech Stack](#tech-stack)
-- [Cấu trúc dự án](#cấu-trúc-dự-án)
-- [Yêu cầu hệ thống](#yêu-cầu-hệ-thống)
-- [Cài đặt và chạy dự án](#cài-đặt-và-chạy-dự-án)
-- [Cấu hình môi trường](#cấu-hình-môi-trường)
-- [Truy cập ứng dụng](#truy-cập-ứng-dụng)
-- [Tài liệu](#tài-liệu)
 
 ## ✨ Tính năng chính
 
